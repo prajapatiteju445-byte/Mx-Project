@@ -139,6 +139,11 @@ async def get_current_user(authorization: Optional[str] = Header(None), session_
     
     return User(**user_doc)
 
+# Add your routes to the router instead of directly to app
+@api_router.get("/")
+async def root():
+    return {"message": "SafeHer API is running", "status": "healthy"}
+
 # Auth Endpoints
 @api_router.get("/auth/session")
 async def exchange_session(x_session_id: str = Header(...)):
