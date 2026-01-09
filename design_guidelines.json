@@ -1,0 +1,157 @@
+{
+  "identity": {
+    "name": "SafeHer",
+    "tagline": "Your Guardian in Your Pocket",
+    "tone": "Empowering, Vigilant, Trustworthy, Community-Driven",
+    "archetype": "The Guardian (Protective & Alert)"
+  },
+  "typography": {
+    "primary_font": "Outfit",
+    "secondary_font": "Plus Jakarta Sans",
+    "font_cdn": [
+      "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap",
+      "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    ],
+    "usage": {
+      "headings": "font-family: 'Outfit', sans-serif; font-weight: 700; letter-spacing: -0.02em;",
+      "subheadings": "font-family: 'Outfit', sans-serif; font-weight: 500;",
+      "body": "font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.6;",
+      "ui_elements": "font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; letter-spacing: 0.01em;"
+    }
+  },
+  "colors": {
+    "palette": {
+      "brand": {
+        "primary": "#2E1065",
+        "primary_foreground": "#FFFFFF",
+        "secondary": "#E9D5FF",
+        "secondary_foreground": "#2E1065"
+      },
+      "emergency": {
+        "alert": "#DC2626",
+        "alert_hover": "#B91C1C",
+        "alert_foreground": "#FFFFFF"
+      },
+      "neutral": {
+        "background": "#FAFAF9",
+        "surface": "#FFFFFF",
+        "text_primary": "#1C1917",
+        "text_secondary": "#57534E",
+        "border": "#E7E5E4"
+      },
+      "status": {
+        "safe": "#059669",
+        "warning": "#D97706",
+        "danger": "#DC2626"
+      }
+    },
+    "usage_rules": {
+      "primary_action": "Use Brand Primary (#2E1065) for standard CTAs",
+      "emergency_action": "Use Emergency Alert (#DC2626) ONLY for SOS/Panic features",
+      "backgrounds": "Use Neutral Background (#FAFAF9) for main pages, Surface (#FFFFFF) for cards",
+      "gradients": "Avoid full gradients. Use subtle mesh gradients of Primary/Secondary for 'Safe Zones'."
+    }
+  },
+  "visual_enhancers": {
+    "radius": {
+      "default": "0.75rem",
+      "card": "1.5rem",
+      "button": "9999px"
+    },
+    "shadows": {
+      "card": "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)",
+      "floating": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+      "glow": "0 0 20px rgba(220, 38, 38, 0.5)"
+    },
+    "textures": {
+      "noise": "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E\")"
+    }
+  },
+  "layout": {
+    "grid_system": "Mobile-first. 4 columns on mobile, 12 on desktop. Gaps: gap-4 (mobile), gap-8 (desktop).",
+    "spacing": {
+      "section_padding": "py-12 md:py-24",
+      "container_padding": "px-4 md:px-8"
+    },
+    "containers": {
+      "max_width": "max-w-7xl mx-auto"
+    }
+  },
+  "components": {
+    "buttons": {
+      "sos": "Fixed bottom-center or center-screen. Circular or large pill. Pulse animation mandatory.",
+      "primary": "h-12 px-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all",
+      "secondary": "h-12 px-8 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all"
+    },
+    "cards": {
+      "style": "bg-white rounded-3xl border border-stone-100 shadow-sm hover:shadow-md transition-all duration-300",
+      "padding": "p-6 md:p-8"
+    },
+    "navigation": {
+      "mobile": "Bottom floating bar with glassmorphism. Icons only or Icons + Label.",
+      "desktop": "Top sticky header with glassmorphism."
+    },
+    "inputs": {
+      "style": "h-12 rounded-xl border-stone-200 bg-stone-50 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+    }
+  },
+  "motion": {
+    "principles": "Reassuring, Smooth, Immediate (for SOS)",
+    "transitions": "transition-all duration-300 ease-out",
+    "animations": {
+      "pulse": "animate-pulse (for SOS button)",
+      "slide_up": "initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}",
+      "fade_in": "initial={{ opacity: 0 }} animate={{ opacity: 1 }}"
+    }
+  },
+  "image_urls": {
+    "hero": {
+      "url": "https://images.pexels.com/photos/11962446/pexels-photo-11962446.jpeg",
+      "alt": "Confident woman walking safely at night in city",
+      "category": "Hero Section"
+    },
+    "community": {
+      "url": "https://images.unsplash.com/photo-1745962981420-66d0ca892373?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHw0fHxkaXZlcnNlJTIwd29tZW4lMjBncm91cCUyMGNvbW11bml0eSUyMHN1cHBvcnR8ZW58MHx8fHwxNzY3OTU4NzgzfDA&ixlib=rb-4.1.0&q=85",
+      "alt": "Diverse group of women supporting each other",
+      "category": "Community Section"
+    },
+    "emergency_support": {
+      "url": "https://images.pexels.com/photos/7682204/pexels-photo-7682204.jpeg",
+      "alt": "Friendly female emergency operator with headset",
+      "category": "Support/Contact Section"
+    },
+    "map_preview": {
+      "url": "https://images.unsplash.com/photo-1736117705462-34145ac33bdf?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwzfHxjaXR5JTIwbWFwJTIwbmF2aWdhdGlvbiUyMGludGVyZmFjZSUyMGFic3RyYWN0fGVufDB8fHx8MTc2Nzk1ODc4NHww&ixlib=rb-4.1.0&q=85",
+      "alt": "Abstract city map interface",
+      "category": "Features/Map Section"
+    }
+  },
+  "instructions_to_main_agent": {
+    "general": "You are building a PWA-first safety application. Prioritize mobile responsiveness and touch targets.",
+    "theme_setup": "Implement the color palette in tailwind.config.js extending the existing theme. Use the 'brand' colors for primary actions.",
+    "sos_feature": "The SOS button must be the most prominent element on the dashboard. Use the 'emergency' color palette for this feature ONLY.",
+    "maps": "For map placeholders, use the provided map_preview image. In the actual implementation, ensure map controls are thumb-friendly.",
+    "accessibility": "Ensure high contrast for all text. The 'emergency' red must be readable against white/dark backgrounds.",
+    "components": "Customize the existing shadcn components in /components/ui to match the 'rounded-3xl' and 'pill' aesthetic. Do not use default sharp corners."
+  },
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯📚🎭🎬🎪🎉🎊🎁🎀🎂🍰🎈🎨🎰💰💵💳🏦💎🪙💸🤑📊📈📉💹🔢🏆🥇 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories (especially sponsor logos) = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Create new components that match the style and conventions of existing components when needed",
+    "Examine existing components to understand the project's component patterns before creating new ones",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use sonner for toasts. Sonner component are located in /app/src/components/ui/sonner.tsx"
+  ]
+}
