@@ -438,7 +438,7 @@ app.include_router(api_router)
 
 cors_origins = os.environ.get('CORS_ORIGINS', '*')
 if cors_origins == '*':
-    cors_origins = ["http://localhost:3000", "https://hersafety-2.preview.emergentagent.com"]
+    cors_origins = ['*']
 else:
     cors_origins = cors_origins.split(',')
 
