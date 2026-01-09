@@ -205,7 +205,7 @@ async def get_me(authorization: Optional[str] = Header(None), session_token: Opt
 @api_router.post("/auth/logout")
 async def logout(response: Response, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     try:
-        user = await get_current_user()
+        user = await get_current_user(authorization, session_token)
         await db.user_sessions.delete_many({"user_id": user.user_id})
         response.delete_cookie("session_token", path="/")
         return {"message": "Logged out successfully"}
