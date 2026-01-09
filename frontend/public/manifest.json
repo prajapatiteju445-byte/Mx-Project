@@ -1,0 +1,21 @@
+{
+  "short_name": "SafeHer",
+  "name": "SafeHer - Your Guardian in Your Pocket",
+  "description": "Women's safety app with emergency SOS, AI distress detection, and community support",
+  "icons": [
+    {
+      "src": "https://api.dicebear.com/7.x/shapes/svg?seed=SafeHer&backgroundColor=2E1065",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#2E1065",
+  "background_color": "#FAFAF9",
+  "orientation": "portrait",
+  "scope": "/",
+  "categories": ["safety", "utilities", "lifestyle"],
+  "screenshots": []
+}
