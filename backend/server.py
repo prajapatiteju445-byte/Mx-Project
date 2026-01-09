@@ -203,7 +203,7 @@ async def get_me(authorization: Optional[str] = Header(None), session_token: Opt
     return user
 
 @api_router.post("/auth/logout")
-async def logout(response: Response, user: User = None):
+async def logout(response: Response, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     try:
         user = await get_current_user()
         await db.user_sessions.delete_many({"user_id": user.user_id})
@@ -214,7 +214,7 @@ async def logout(response: Response, user: User = None):
 
 # Emergency Contacts Endpoints
 @api_router.get("/emergency/contacts", response_model=List[EmergencyContact])
-async def get_contacts(user: User = None):
+async def get_contacts(authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user()
     contacts = await db.emergency_contacts.find({"user_id": user.user_id}, {"_id": 0}).to_list(100)
     for contact in contacts:
@@ -223,7 +223,7 @@ async def get_contacts(user: User = None):
     return contacts
 
 @api_router.post("/emergency/contacts", response_model=EmergencyContact)
-async def create_contact(request: CreateContactRequest, user: User = None):
+async def create_contact(request: CreateContactRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user()
     contact = EmergencyContact(
         user_id=user.user_id,
@@ -235,7 +235,7 @@ async def create_contact(request: CreateContactRequest, user: User = None):
     return contact
 
 @api_router.delete("/emergency/contacts/{contact_id}")
-async def delete_contact(contact_id: str, user: User = None):
+async def delete_contact(contact_id: str, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user()
     result = await db.emergency_contacts.delete_one({"contact_id": contact_id, "user_id": user.user_id})
     if result.deleted_count == 0:
@@ -244,7 +244,7 @@ async def delete_contact(contact_id: str, user: User = None):
 
 # Emergency Alert Endpoints
 @api_router.post("/emergency/trigger", response_model=EmergencyAlert)
-async def trigger_emergency(request: TriggerEmergencyRequest, user: User = None):
+async def trigger_emergency(request: TriggerEmergencyRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user()
     
     contacts = await db.emergency_contacts.find({"user_id": user.user_id}, {"_id": 0}).to_list(100)
@@ -267,7 +267,7 @@ async def trigger_emergency(request: TriggerEmergencyRequest, user: User = None)
     return alert
 
 @api_router.get("/emergency/active", response_model=Optional[EmergencyAlert])
-async def get_active_emergency(user: User = None):
+async def get_active_emergency(authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user()
     alert = await db.emergency_alerts.find_one(
         {"user_id": user.user_id, "status": "active"},
@@ -283,7 +283,7 @@ async def get_active_emergency(user: User = None):
     return None
 
 @api_router.post("/emergency/resolve/{alert_id}")
-async def resolve_emergency(alert_id: str, user: User = None):
+async def resolve_emergency(alert_id: str, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user()
     result = await db.emergency_alerts.update_one(
         {"alert_id": alert_id, "user_id": user.user_id},
@@ -298,7 +298,7 @@ async def resolve_emergency(alert_id: str, user: User = None):
 
 # Community Reports Endpoints
 @api_router.post("/community/reports", response_model=CommunityReport)
-async def submit_report(request: SubmitReportRequest, user: User = None):
+async def submit_report(request: SubmitReportRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user()
     report = CommunityReport(
         user_id=None if request.anonymous else user.user_id,
@@ -343,7 +343,7 @@ async def get_nearby_zones(latitude: float, longitude: float, radius: float = 50
 
 # Fake Call Endpoint
 @api_router.post("/fake-call")
-async def generate_fake_call(request: FakeCallRequest, user: User = None):
+async def generate_fake_call(request: FakeCallRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user()
     return {
         "caller": request.caller_name,
@@ -354,7 +354,7 @@ async def generate_fake_call(request: FakeCallRequest, user: User = None):
 
 # AI Distress Detection using Gemini 3 Flash
 @api_router.post("/ai/analyze-distress")
-async def analyze_distress(request: AnalyzeDistressRequest, user: User = None):
+async def analyze_distress(request: AnalyzeDistressRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user()
     
     try:
