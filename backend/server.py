@@ -215,7 +215,7 @@ async def logout(response: Response, authorization: Optional[str] = Header(None)
 # Emergency Contacts Endpoints
 @api_router.get("/emergency/contacts", response_model=List[EmergencyContact])
 async def get_contacts(authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
-    user = await get_current_user()
+    user = await get_current_user(authorization, session_token)
     contacts = await db.emergency_contacts.find({"user_id": user.user_id}, {"_id": 0}).to_list(100)
     for contact in contacts:
         if isinstance(contact.get("created_at"), str):
@@ -224,7 +224,7 @@ async def get_contacts(authorization: Optional[str] = Header(None), session_toke
 
 @api_router.post("/emergency/contacts", response_model=EmergencyContact)
 async def create_contact(request: CreateContactRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
-    user = await get_current_user()
+    user = await get_current_user(authorization, session_token)
     contact = EmergencyContact(
         user_id=user.user_id,
         **request.model_dump()
@@ -236,7 +236,7 @@ async def create_contact(request: CreateContactRequest, authorization: Optional[
 
 @api_router.delete("/emergency/contacts/{contact_id}")
 async def delete_contact(contact_id: str, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
-    user = await get_current_user()
+    user = await get_current_user(authorization, session_token)
     result = await db.emergency_contacts.delete_one({"contact_id": contact_id, "user_id": user.user_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Contact not found")
@@ -245,7 +245,7 @@ async def delete_contact(contact_id: str, authorization: Optional[str] = Header(
 # Emergency Alert Endpoints
 @api_router.post("/emergency/trigger", response_model=EmergencyAlert)
 async def trigger_emergency(request: TriggerEmergencyRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
-    user = await get_current_user()
+    user = await get_current_user(authorization, session_token)
     
     contacts = await db.emergency_contacts.find({"user_id": user.user_id}, {"_id": 0}).to_list(100)
     contact_ids = [c["contact_id"] for c in contacts]
@@ -268,7 +268,7 @@ async def trigger_emergency(request: TriggerEmergencyRequest, authorization: Opt
 
 @api_router.get("/emergency/active", response_model=Optional[EmergencyAlert])
 async def get_active_emergency(authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
-    user = await get_current_user()
+    user = await get_current_user(authorization, session_token)
     alert = await db.emergency_alerts.find_one(
         {"user_id": user.user_id, "status": "active"},
         {"_id": 0},
@@ -284,7 +284,7 @@ async def get_active_emergency(authorization: Optional[str] = Header(None), sess
 
 @api_router.post("/emergency/resolve/{alert_id}")
 async def resolve_emergency(alert_id: str, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
-    user = await get_current_user()
+    user = await get_current_user(authorization, session_token)
     result = await db.emergency_alerts.update_one(
         {"alert_id": alert_id, "user_id": user.user_id},
         {"$set": {
@@ -299,7 +299,7 @@ async def resolve_emergency(alert_id: str, authorization: Optional[str] = Header
 # Community Reports Endpoints
 @api_router.post("/community/reports", response_model=CommunityReport)
 async def submit_report(request: SubmitReportRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
-    user = await get_current_user()
+    user = await get_current_user(authorization, session_token)
     report = CommunityReport(
         user_id=None if request.anonymous else user.user_id,
         **request.model_dump()
@@ -344,7 +344,7 @@ async def get_nearby_zones(latitude: float, longitude: float, radius: float = 50
 # Fake Call Endpoint
 @api_router.post("/fake-call")
 async def generate_fake_call(request: FakeCallRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
-    user = await get_current_user()
+    user = await get_current_user(authorization, session_token)
     return {
         "caller": request.caller_name,
         "message": f"Hey {user.name.split()[0]}, just checking when you'll be home?",
@@ -355,7 +355,7 @@ async def generate_fake_call(request: FakeCallRequest, authorization: Optional[s
 # AI Distress Detection using Gemini 3 Flash
 @api_router.post("/ai/analyze-distress")
 async def analyze_distress(request: AnalyzeDistressRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
-    user = await get_current_user()
+    user = await get_current_user(authorization, session_token)
     
     try:
         chat = LlmChat(
