@@ -64,21 +64,46 @@ export default function Dashboard() {
   };
 
   const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy
-          });
-        },
-        (error) => {
-          console.error('Location error:', error);
-          toast.error('Unable to get your location. Please enable GPS.');
-        }
-      );
+    if (!navigator.geolocation) {
+      toast.error('Geolocation is not supported by your browser');
+      // Fallback to default location (Delhi, India)
+      setLocation({
+        latitude: 28.6139,
+        longitude: 77.2090,
+        accuracy: 1000
+      });
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy
+        });
+        toast.success('Location captured successfully');
+      },
+      (error) => {
+        console.error('Location error:', error);
+        // Use fallback location but notify user
+        setLocation({
+          latitude: 28.6139,
+          longitude: 77.2090,
+          accuracy: 1000
+        });
+        if (error.code === error.PERMISSION_DENIED) {
+          toast.warning('Location permission denied. Using default location. Enable GPS for accurate location.');
+        } else {
+          toast.warning('Unable to get your location. Using default location.');
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 30000
+      }
+    );
   };
 
   const handleSosPress = () => {
