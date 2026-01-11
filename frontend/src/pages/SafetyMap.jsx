@@ -44,21 +44,35 @@ export default function SafetyMap() {
   }, []);
 
   const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-        },
-        (error) => {
-          console.error('Location error:', error);
-          toast.error('Unable to get your location');
-          setUserLocation({ lat: 28.6139, lng: 77.2090 }); // Default to Delhi
-        }
-      );
+    if (!navigator.geolocation) {
+      toast.warning('Geolocation not supported. Using default location.');
+      setUserLocation({ lat: 28.6139, lng: 77.2090 });
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+        toast.success('Location captured');
+      },
+      (error) => {
+        console.error('Location error:', error);
+        setUserLocation({ lat: 28.6139, lng: 77.2090 }); // Default to Delhi
+        if (error.code === error.PERMISSION_DENIED) {
+          toast.warning('Location permission denied. Using default location.');
+        } else {
+          toast.warning('Unable to get location. Using default location.');
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 30000
+      }
+    );
   };
 
   const fetchSafetyZones = async () => {
