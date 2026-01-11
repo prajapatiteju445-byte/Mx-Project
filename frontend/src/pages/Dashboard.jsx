@@ -250,31 +250,47 @@ export default function Dashboard() {
           transition={{ duration: 0.5 }}
           className="flex flex-col items-center justify-center mb-12"
         >
-          <button
-            onClick={handleSosPress}
-            data-testid="sos-button"
-            className="sos-button"
-            style={{
-              animation: sosActive ? 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' : 'none'
-            }}
-          >
-            {sosActive ? (
-              <div className="text-center">
-                <AlertTriangle className="w-12 h-12 mx-auto mb-2" />
-                <div className="text-sm">ACTIVE</div>
-              </div>
-            ) : (
-              <div className="text-center">
-                <AlertCircle className="w-12 h-12 mx-auto mb-2" />
-                <div className="text-sm">SOS</div>
-              </div>
-            )}
-          </button>
+          <div className="relative">
+            <button
+              onClick={handleSosPress}
+              onMouseDown={handleSosMouseDown}
+              onMouseUp={handleSosMouseUp}
+              onMouseLeave={handleSosMouseUp}
+              onTouchStart={handleSosMouseDown}
+              onTouchEnd={handleSosMouseUp}
+              data-testid="sos-button"
+              className="sos-button relative overflow-hidden"
+              style={{
+                animation: sosActive ? 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' : 'none'
+              }}
+            >
+              {/* Hold progress indicator */}
+              {isHolding && (
+                <div 
+                  className="absolute inset-0 bg-white/30 transition-all"
+                  style={{
+                    clipPath: `inset(${100 - holdProgress}% 0 0 0)`
+                  }}
+                />
+              )}
+              {sosActive ? (
+                <div className="text-center relative z-10">
+                  <AlertTriangle className="w-12 h-12 mx-auto mb-2" />
+                  <div className="text-sm">ACTIVE</div>
+                </div>
+              ) : (
+                <div className="text-center relative z-10">
+                  <AlertCircle className="w-12 h-12 mx-auto mb-2" />
+                  <div className="text-sm">{isHolding ? 'HOLD...' : 'SOS'}</div>
+                </div>
+              )}
+            </button>
+          </div>
           <p className="mt-6 text-center text-stone-600 font-jakarta max-w-md">
             {sosActive ? (
               <span className="text-emergency font-semibold">Emergency alert is active. Contacts have been notified.</span>
             ) : (
-              <span>Press and hold the SOS button in case of emergency</span>
+              <span>Press and hold the SOS button for 3 seconds in case of emergency</span>
             )}
           </p>
         </motion.div>
