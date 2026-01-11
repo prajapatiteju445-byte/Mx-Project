@@ -320,6 +320,20 @@ async def resolve_emergency(alert_id: str, authorization: Optional[str] = Header
         raise HTTPException(status_code=404, detail="Alert not found")
     return {"message": "Emergency resolved"}
 
+# Get notification logs for an alert
+@api_router.get("/emergency/notifications/{alert_id}")
+async def get_notifications(alert_id: str, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
+    user = await get_current_user(authorization, session_token)
+    
+    # Verify alert belongs to user
+    alert = await db.emergency_alerts.find_one({"alert_id": alert_id, "user_id": user.user_id}, {"_id": 0})
+    if not alert:
+        raise HTTPException(status_code=404, detail="Alert not found")
+    
+    # Get all notifications for this alert
+    notifications = await db.notification_logs.find({"alert_id": alert_id}, {"_id": 0}).to_list(100)
+    return notifications
+
 # Community Reports Endpoints
 @api_router.post("/community/reports", response_model=CommunityReport)
 async def submit_report(request: SubmitReportRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
