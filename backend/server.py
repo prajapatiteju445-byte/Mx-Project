@@ -16,9 +16,15 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
+# MongoDB connection with connection pooling for high concurrency
 mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
+client = AsyncIOMotorClient(
+    mongo_url,
+    maxPoolSize=100,  # Support up to 100 concurrent connections
+    minPoolSize=10,   # Keep 10 connections ready
+    maxIdleTimeMS=45000,  # Close idle connections after 45s
+    serverSelectionTimeoutMS=5000  # Fail fast if MongoDB unavailable
+)
 db = client[os.environ['DB_NAME']]
 
 # Create the main app
