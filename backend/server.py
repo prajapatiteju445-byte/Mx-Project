@@ -230,7 +230,7 @@ async def get_contacts(authorization: Optional[str] = Header(None), session_toke
             contact["created_at"] = datetime.fromisoformat(contact["created_at"])
     return contacts
 
-@api_router.post("/emergency/contacts", response_model=EmergencyContact)
+@api_router.post("/emergency/contacts", response_model=EmergencyContact, status_code=201)
 async def create_contact(request: CreateContactRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user(authorization, session_token)
     contact = EmergencyContact(
