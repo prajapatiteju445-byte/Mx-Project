@@ -251,7 +251,7 @@ async def delete_contact(contact_id: str, authorization: Optional[str] = Header(
     return {"message": "Contact deleted"}
 
 # Emergency Alert Endpoints
-@api_router.post("/emergency/trigger", response_model=EmergencyAlert)
+@api_router.post("/emergency/trigger", response_model=EmergencyAlert, status_code=201)
 async def trigger_emergency(request: TriggerEmergencyRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user(authorization, session_token)
     
