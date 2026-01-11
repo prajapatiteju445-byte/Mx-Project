@@ -19,6 +19,10 @@ export default function Dashboard() {
   const [showSosDialog, setShowSosDialog] = useState(false);
   const [activeAlert, setActiveAlert] = useState(null);
   const [location, setLocation] = useState(null);
+  const [isHolding, setIsHolding] = useState(false);
+  const [holdProgress, setHoldProgress] = useState(0);
+  const holdTimerRef = useRef(null);
+  const progressIntervalRef = useRef(null);
 
   useEffect(() => {
     fetchUserData();
