@@ -343,7 +343,7 @@ async def get_notifications(alert_id: str, authorization: Optional[str] = Header
     return notifications
 
 # Community Reports Endpoints
-@api_router.post("/community/reports", response_model=CommunityReport)
+@api_router.post("/community/reports", response_model=CommunityReport, status_code=201)
 async def submit_report(request: SubmitReportRequest, authorization: Optional[str] = Header(None), session_token: Optional[str] = Cookie(None)):
     user = await get_current_user(authorization, session_token)
     report = CommunityReport(
