@@ -474,9 +474,10 @@ async def seed_safety_zones():
 
 app.include_router(api_router)
 
-cors_origins = os.environ.get('CORS_ORIGINS', '*')
+cors_origins = os.environ.get('CORS_ORIGINS', 'http://localhost:3000')
 if cors_origins == '*':
-    cors_origins = ['*']
+    # Wildcard doesn't work with credentials, use specific origins
+    cors_origins = ['http://localhost:3000', 'https://hersafety-2.preview.emergentagent.com']
 else:
     cors_origins = cors_origins.split(',')
 
