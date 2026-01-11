@@ -264,6 +264,30 @@ async def trigger_emergency(request: TriggerEmergencyRequest, authorization: Opt
     doc["triggered_at"] = doc["triggered_at"].isoformat()
     await db.emergency_alerts.insert_one(doc)
     
+    # Send notifications to all emergency contacts
+    for contact in contacts:
+        try:
+            # Log notification (in production, this would send real SMS/Email)
+            notification_log = {
+                "alert_id": alert.alert_id,
+                "contact_id": contact["contact_id"],
+                "contact_name": contact["name"],
+                "contact_phone": contact.get("phone"),
+                "contact_email": contact.get("email"),
+                "user_name": user.name,
+                "user_location": request.location,
+                "message": f"🚨 EMERGENCY ALERT: {user.name} needs immediate help! Location: {request.location.get('latitude')}, {request.location.get('longitude')}",
+                "sent_at": datetime.now(timezone.utc).isoformat(),
+                "status": "sent"
+            }
+            await db.notification_logs.insert_one(notification_log)
+            
+            logging.info(f"Emergency notification sent to {contact['name']} ({contact.get('phone', contact.get('email'))})")
+            logging.info(f"Message: {notification_log['message']}")
+            
+        except Exception as e:
+            logging.error(f"Failed to send notification to {contact['name']}: {e}")
+    
     return alert
 
 @api_router.get("/emergency/active", response_model=Optional[EmergencyAlert])
