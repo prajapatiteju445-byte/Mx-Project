@@ -69,24 +69,52 @@ export default function CommunityReport() {
   };
 
   const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setFormData({
-            ...formData,
-            location: {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
-            }
-          });
-          toast.success('Location captured');
-        },
-        (error) => {
-          console.error('Location error:', error);
-          toast.error('Unable to get your location. Please enable GPS.');
+    if (!navigator.geolocation) {
+      toast.warning('Geolocation not supported. Please enable location manually.');
+      // Set default location
+      setFormData({
+        ...formData,
+        location: {
+          latitude: 28.6139,
+          longitude: 77.2090
         }
-      );
+      });
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setFormData({
+          ...formData,
+          location: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          }
+        });
+        toast.success('Location captured successfully!');
+      },
+      (error) => {
+        console.error('Location error:', error);
+        // Use fallback
+        setFormData({
+          ...formData,
+          location: {
+            latitude: 28.6139,
+            longitude: 77.2090
+          }
+        });
+        if (error.code === error.PERMISSION_DENIED) {
+          toast.warning('Location permission denied. Using default location.');
+        } else {
+          toast.warning('Unable to get location. Using default location.');
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 30000
+      }
+    );
   };
 
   return (
