@@ -84,10 +84,52 @@ export default function Dashboard() {
   const handleSosPress = () => {
     if (sosActive) {
       setShowSosDialog(true);
-    } else {
-      triggerEmergency();
     }
   };
+
+  const handleSosMouseDown = () => {
+    if (sosActive) return; // Don't start timer if already active
+    
+    setIsHolding(true);
+    setHoldProgress(0);
+    
+    // Progress animation
+    progressIntervalRef.current = setInterval(() => {
+      setHoldProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(progressIntervalRef.current);
+          return 100;
+        }
+        return prev + 3.33; // 100 / 30 frames = 3.33 per frame (for 3 seconds at 10fps)
+      });
+    }, 100);
+    
+    // Trigger after 3 seconds
+    holdTimerRef.current = setTimeout(() => {
+      triggerEmergency();
+      setIsHolding(false);
+      setHoldProgress(0);
+    }, 3000);
+  };
+
+  const handleSosMouseUp = () => {
+    if (holdTimerRef.current) {
+      clearTimeout(holdTimerRef.current);
+    }
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+    }
+    setIsHolding(false);
+    setHoldProgress(0);
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    };
+  }, []);
 
   const triggerEmergency = async () => {
     if (!location) {
