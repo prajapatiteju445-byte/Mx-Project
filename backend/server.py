@@ -150,6 +150,84 @@ async def get_current_user(authorization: Optional[str] = Header(None), session_
     
     return User(**user_doc)
 
+# Email notification function
+async def send_email_notification(to_email: str, subject: str, body: str, html_body: str = None):
+    """
+    Send email notification using SMTP
+    Configure SMTP settings in environment variables:
+    SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD
+    """
+    try:
+        smtp_host = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
+        smtp_port = int(os.environ.get('SMTP_PORT', '587'))
+        smtp_user = os.environ.get('SMTP_USER', 'noreply@safeher.app')
+        smtp_password = os.environ.get('SMTP_PASSWORD', '')
+        
+        # Create message
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = f"SafeHer Emergency <{smtp_user}>"
+        msg['To'] = to_email
+        
+        # Add plain text
+        text_part = MIMEText(body, 'plain')
+        msg.attach(text_part)
+        
+        # Add HTML if provided
+        if html_body:
+            html_part = MIMEText(html_body, 'html')
+            msg.attach(html_part)
+        
+        # Send email (only if SMTP credentials configured)
+        if smtp_password:  # Only send if password configured
+            with smtplib.SMTP(smtp_host, smtp_port) as server:
+                server.starttls()
+                server.login(smtp_user, smtp_password)
+                server.send_message(msg)
+            logging.info(f"Email sent successfully to {to_email}")
+            return True
+        else:
+            logging.warning(f"SMTP not configured, email to {to_email} logged but not sent")
+            return False
+            
+    except Exception as e:
+        logging.error(f"Failed to send email to {to_email}: {e}")
+        return False
+
+# SMS notification function (webhook-based for flexibility)
+async def send_sms_notification(phone: str, message: str):
+    """
+    Send SMS notification via webhook or Twilio
+    Configure: SMS_WEBHOOK_URL or TWILIO credentials
+    """
+    try:
+        webhook_url = os.environ.get('SMS_WEBHOOK_URL', '')
+        
+        if webhook_url:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    webhook_url,
+                    json={
+                        "to": phone,
+                        "message": message,
+                        "from": "SafeHer"
+                    },
+                    timeout=10.0
+                )
+                if response.status_code == 200:
+                    logging.info(f"SMS sent successfully to {phone}")
+                    return True
+                else:
+                    logging.error(f"SMS webhook failed: {response.status_code}")
+                    return False
+        else:
+            logging.warning(f"SMS webhook not configured, message to {phone} logged but not sent")
+            return False
+            
+    except Exception as e:
+        logging.error(f"Failed to send SMS to {phone}: {e}")
+        return False
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
