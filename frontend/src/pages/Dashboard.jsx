@@ -182,7 +182,16 @@ export default function Dashboard() {
         const data = await response.json();
         setActiveAlert(data);
         setSosActive(true);
-        toast.success('🚨 Emergency alert sent to all contacts!');
+        
+        // Clear visual feedback
+        setIsHolding(false);
+        setHoldProgress(0);
+        
+        // Show prominent success message
+        toast.success(
+          '🚨 EMERGENCY ACTIVATED! All contacts notified with your location!',
+          { duration: 5000 }
+        );
       } else {
         throw new Error('Failed to trigger emergency');
       }
